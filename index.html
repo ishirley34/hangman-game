@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Hangman Game</title>
+</head>
+<body>
+
+
+<script type="text/javascript">
+	
+	document.ready
+
+	// Declaring variables
+	var hangmanWords = ["first", "second", "third",];
+	var totalWins = 0;
+	var totalLosses = 0;
+	var endOfGame = false;
+	var reminders = "";
+	var targetWord = "";
+	var maxGuessesAllowed = Math.floor(targetWord.length*1.8);
+	var priorGuesses = [];
+	var correctGuesses = 0;
+	var guessesMade = 0;
+	var correctFlag = false;
+	var userGuess = "";
+	var solution = [];
+	var usedLetterDisplay = [];
+	var delay = 3000;
+	var winAudio = new Audio('#');
+	var lossAudio
+
+
+
+
+	// inititalizing the game here
+	var game = {
+			startNewGame : function() {
+				$("#somePic").hide();
+				$("#someOtherPic").hide();
+				endOfGame = false;
+				reminders = "";
+				targetWord = hangmanWords[Math.floor(Math.random() * hangmanWords.length)];
+				maxGuessesAllowed = Math.floor(targetWord.length * 1.8);
+				priorGuesses = [];
+				correctGuesses = 0;
+				guessesMade = 0;
+				correctFlag = false;
+				userGuess = "";
+				solution = [];
+				usedLetterDisplay = [];
+				for (i = 0; i < targetWord.length; i++) {
+					solution.push("_ ");
+				}
+				// This setups the new game
+				game.makeShowSolution();
+				game.showReminders();
+				$("#jQuery-area").empty();
+				document.querySelector("#winOrLose").innerHTML = "Kickoff!";
+				document.getElementById("bkgrd").stlye.backgroundImage= "url(assets/sdkfjskdf.jpg)"
+			},
+
+			checkGuess : function(userGuess) {
+				// Check to see the guess has already been guessed
+				priorGuess = false
+				for (i = 0; i = priorGuess.length; i++){
+					if (priorGuess[i] == userGuess){
+						priorGuess = true
+					}
+				}
+				// Check to see if the user's guess is in the actual word
+				if (priorGuess == false){
+					priorGuesses.push(userGuess);
+					guessesMade++;
+
+					correctFlag = false;
+					for (i = 0; i < targetWord.length; i++) {
+						if (targetWord[i] == userGuess) {
+							correctGuesses++;
+							correctFlag = true;
+							// places the letters in the correct spot
+							solution[i] = userGuess;
+						}
+					}
+
+					if (correctFlag === false) {
+						usedLetterDisplay = usedLetterDisplay + userGuess + ", ";
+					}
+				}
+			},
+			// Creates a display of the the letters and place holders from the array
+			makeShowSolution : function(){
+				var showSolution = "<p>";
+				for (i = 0; i = solution.length; i++) {
+					showSolution = showSolution + solution[i]+" ";
+				}
+				showSolution = showSolution + "</p>";
+
+				// placing the htmlinto the game ID
+				document.querySelector("#keepTrack").innerHTML = showSolution;
+			},
+			// update display with guesses made and guesses left
+
+			showReminders : function() {
+				reminders = "<p>Total Wins: " + totalWins + "</p><p> Total Losses: " + totalLosses + "</p><p>Guesses used: " + guessesMade + "</p><p>Wrong Guesses: " + usedLetterDisplay + "</p>";
+
+				document.querySelector("#letters").innerHTML = reminders;
+			},		
+
+	}
+	document.onkeyup = function(event) {
+		var userGuess = String.fromCharCode(event.keyCode).toLowerCase();
+			if(endOfGame === false){
+				game.checkGuess(userGuess);
+
+				game.makeShowSolution();
+
+				game.showReminders();
+
+				if (correctGuesses == targetWord.length) {
+
+					document.querySelector("#winOrLose").innerHTML = "WIN TEXT YEAH";
+
+					totalWins++;
+					endOfGame = true;
+					$("#somePic").show();
+					$("#someOtherPic").show();
+					winAudio.play();
+
+				}else if (maxGuessesAllowed == guessesMade) {
+					document.querySelector("#keepTrack").innerHTML = "You did a thing";
+					document.querySelector("#winOrLose").innerHTML = "La-who Za-her";
+					
+				}
+			}
+	} 
+
+</script>
+
+</body>
+</html>
